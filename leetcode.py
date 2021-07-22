@@ -776,3 +776,74 @@ class SolutionJZOffer52:
             h2 = headA if h2 is None else h2.next
 
         return h1
+
+
+# 138
+class Node:
+    def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):
+        self.val = int(x)
+        self.next = next
+        self.random = random
+
+
+class Solution138:
+    # 标准想法
+    def copyRandomList1(self, head: 'Node') -> 'Node':
+        if not head:
+            return None
+        h1 = Node(head.val)
+
+        cursor = head
+        h2 = h1
+        n = 0
+        # 先建立next结构
+        while cursor.next:
+            h2.next = Node(cursor.next.val)
+            h2 = h2.next
+            cursor = cursor.next
+            n += 1
+
+        cursor = head
+        h2 = h1
+        # 再关联random结构
+        while cursor:
+            random_cursor = cursor.random
+            if random_cursor is not None:
+                j = 0
+                while random_cursor.next:
+                    random_cursor = random_cursor.next
+                    j += 1
+                d = n - j
+                h3 = h1
+                for k in range(d):
+                    h3 = h3.next
+                h2.random = h3
+            else:
+                h2.random = None
+
+            h2 = h2.next
+            cursor = cursor.next
+        return h1
+
+    # 插入法
+    def copyRandomList(self, head: 'Node') -> 'Node':
+        if not head:
+            return None
+
+        cursor = head
+        # 将克隆得节点插在原节点后
+        while cursor:
+            temp = cursor.next
+            cursor.next = Node(cursor.val)
+            cursor.next.next = temp
+            cursor = temp
+
+        cursor = head
+        # 对克隆节点依照源节点做random关联，并跳过下一个源节点
+        while cursor:
+            clone_cursor = cursor.next
+            clone_cursor.random = cursor.random.next if cursor.random else None
+            cursor = cursor.next.next
+            clone_cursor.next = cursor.next if cursor else None
+
+        return head.next
