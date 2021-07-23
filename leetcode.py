@@ -847,3 +847,44 @@ class Solution138:
             clone_cursor.next = cursor.next if cursor else None
 
         return head.next
+
+
+# 1893
+class Solution1893:
+    """
+        给你一个二维整数数组ranges和两个整数left和right。每个ranges[i] = [starti, endi]表示一个从starti到endi的闭区间。
+
+        如果闭区间[left, right]内每个整数都被ranges中至少一个区间覆盖，那么请你返回true，否则返回false。
+        
+        已知区间 ranges[i] = [starti, endi] ，如果整数 x 满足 starti <= x <= endi，那么我们称整数x被覆盖了。
+
+        输入：ranges = [[1,2],[3,4],[5,6]], left = 2, right = 5
+        输出：true
+        解释：2 到 5 的每个整数都被覆盖了：
+        - 2 被第一个区间覆盖。
+        - 3 和 4 被第二个区间覆盖。
+        - 5 被第三个区间覆盖。
+    """
+    def isCovered(self, ranges: List[List[int]], left: int, right: int) -> bool:
+        n = len(ranges)
+        if n < 1:
+            return False
+
+        i = left
+        j = 0
+        ranges = sorted(ranges, key=lambda x: x[0])
+        while i <= right:
+            while j < n:
+                arr = ranges[j]
+                if arr[0] <= i <= arr[1]:
+                    i = arr[1] + 1
+                    break
+                j += 1
+            else:
+                return False
+        return True
+
+
+if __name__ == '__main__':
+    s = Solution1893()
+    print(s.isCovered(ranges = [[1,2],[3,4],[5,6]], left = 2, right = 5))
