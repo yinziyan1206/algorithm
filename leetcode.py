@@ -1,4 +1,4 @@
-import time
+import bisect
 from typing import List, Set
 
 
@@ -885,6 +885,40 @@ class Solution1893:
         return True
 
 
+# 1713
+class Solution1713:
+    """
+        给你一个数组target，包含若干 互不相同的整数，以及另一个整数数组arr，arr可能 包含重复元素。
+
+        每一次操作中，你可以在 arr的任意位置插入任一整数。比方说，如果arr = [1,4,1,2]，那么你可以在中间添加 3得到[1,4,3,1,2]。你可以在数组最开始或最后面添加整数。
+    
+        请你返回 最少操作次数，使得target成为arr的一个子序列。
+    
+        一个数组的 子序列指的是删除原数组的某些元素（可能一个元素都不删除），同时不改变其余元素的相对顺序得到的数组。比方说，[2,7,4]是[4,2,3,7,2,1,4]的子序列（加粗元素），但[2,4,2]不是子序列。
+    """
+    def minOperations(self, target: List[int], arr: List[int]) -> int:
+        target_n, arr_n = len(target), len(arr)
+        target_set = {v: k for k, v in enumerate(target)}
+
+        if target_n < 1:
+            return 0
+        container = list()
+        for i in range(arr_n):
+            if arr[i] in target_set:
+                # hash找值
+                index = target_set[arr[i]]
+                # 二叉树获取 index按排序对应的节点位置。
+                i = bisect.bisect_left(container, index)
+                if i == len(container):
+                    container.append(index)
+                else:
+                    container[i] = index
+        return len(target) - len(container)
+
+
 if __name__ == '__main__':
-    s = Solution1893()
-    print(s.isCovered(ranges = [[1,2],[3,4],[5,6]], left = 2, right = 5))
+    s = Solution1713()
+    # print(s.minOperations([5, 1, 3], [9, 4, 2, 3, 4]))
+    print(s.minOperations([6, 4, 8, 1, 3, 2], [4, 7, 6, 2, 3, 8, 6, 1]))
+    # print(s.minOperations([16, 7, 20, 11, 15, 13, 10, 14, 6, 8], [11, 14, 15, 7, 5, 5, 6, 10, 11, 6]))
+
