@@ -916,9 +916,39 @@ class Solution1713:
         return len(target) - len(container)
 
 
-if __name__ == '__main__':
-    s = Solution1713()
-    # print(s.minOperations([5, 1, 3], [9, 4, 2, 3, 4]))
-    print(s.minOperations([6, 4, 8, 1, 3, 2], [4, 7, 6, 2, 3, 8, 6, 1]))
-    # print(s.minOperations([16, 7, 20, 11, 15, 13, 10, 14, 6, 8], [11, 14, 15, 7, 5, 5, 6, 10, 11, 6]))
+# 671
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
+
+class Solution671:
+    def findSecondMinimumValue(self, root: TreeNode) -> int:
+        if not root:
+            return -1
+        num = root.val
+        r = root
+        container = set()
+        self.findNode(num, r, container)
+        return min(container) if len(container) > 0 else -1
+
+    def findNode(self, num, node, container):
+        if not node.left:
+            return
+
+        if node.left.val > num:
+            container.add(node.left.val)
+        else:
+            self.findNode(num, node.left, container)
+
+        if node.right.val > num:
+            container.add(node.right.val)
+        else:
+            self.findNode(num, node.right, container)
+
+
+if __name__ == '__main__':
+    s = Solution671()
