@@ -950,5 +950,67 @@ class Solution671:
             self.findNode(num, node.right, container)
 
 
+# 863
+class Solution863:
+    """
+        给定一个二叉树（具有根结点root），一个目标结点target，和一个整数值 K 。
+
+        返回到目标结点 target 距离为 K 的所有结点的值的列表。 答案可以以任何顺序返回。
+    """
+    def distanceK(self, root: TreeNode, target: TreeNode, k: int) -> List[int]:
+        container = list()
+        # 获取父节点map
+        parents = {root: None}
+
+        self.parentMap(root, parents)
+        t = target
+        times = 0
+        while t in parents and times <= k:
+            self.findNode(t, k-times, container)
+            last = t
+            t = parents[t]
+            if not t:
+                break
+            if t.left == last:
+                t.left = None
+            else:
+                t.right = None
+            times += 1
+        return container
+
+    def parentMap(self, cursor, container: dict):
+        if cursor.left:
+            container[cursor.left] = cursor
+            self.parentMap(cursor.left, container)
+        if cursor.right:
+            container[cursor.right] = cursor
+            self.parentMap(cursor.right, container)
+
+    def findNode(self, target: TreeNode, times: int, container: list):
+        if times == 0:
+            container.append(target.val)
+            return
+        if target.left:
+            self.findNode(target.left, times-1, container)
+        if target.right:
+            self.findNode(target.right, times-1, container)
+
+
+# 171
+class Solution171:
+    """
+        给定一个Excel表格中的列名称，返回其相应的列序号。
+    """
+    def titleToNumber(self, columnTitle: str) -> int:
+        index = 0
+        output = 0
+        for i in range(len(columnTitle)):
+            ch = columnTitle[-i - 1]
+            output += (26**index) * (ord(ch) - ord('A') + 1)
+            index += 1
+        return output
+
+
 if __name__ == '__main__':
-    s = Solution671()
+    s = Solution171()
+    print(s.titleToNumber('ZZY'))
