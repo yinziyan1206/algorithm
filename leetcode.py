@@ -1011,6 +1011,33 @@ class Solution171:
         return output
 
 
+# 581
+class Solution581:
+    """
+        给你一个整数数组 nums ，你需要找出一个 连续子数组 ，如果对这个子数组进行升序排序，那么整个数组都会变为升序排序。
+
+        请你找出符合题意的 最短 子数组，并输出它的长度。
+    """
+    def findUnsortedSubarray(self, nums: List[int]) -> int:
+        n = len(nums)
+        if n < 1:
+            return 0
+        min_num = nums[-1]
+        start, end = 0, 0
+        for i in range(n):
+            if min_num < nums[-i - 1]:
+                start = n - i - 1
+            min_num = min(nums[-i - 1], min_num)
+
+        max_num = nums[start]
+        for i in range(start, n):
+            if max_num > nums[i]:
+                end = i
+            max_num = max(max_num, nums[i])
+
+        return end - start + 1 if end != start else 0
+
+
 if __name__ == '__main__':
-    s = Solution171()
-    print(s.titleToNumber('ZZY'))
+    s = Solution581()
+    print(s.findUnsortedSubarray([1,3,5,4,2]))
