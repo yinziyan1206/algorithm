@@ -1038,6 +1038,29 @@ class Solution581:
         return end - start + 1 if end != start else 0
 
 
+# 611
+class Solution611:
+    """
+        给定一个包含非负整数的数组，你的任务是统计其中可以组成三角形三条边的三元组个数。
+    """
+    def triangleNumber(self, nums: List[int]) -> int:
+        n = len(nums)
+        if n < 3:
+            return 0
+        output = 0
+        s_nums = sorted(nums)
+        for i in range(n-2):
+            cursor = i + 2
+            for j in range(i+1, n-1):
+                cursor = max(j + 1, cursor)
+                output += (cursor - j - 1)
+                comb = s_nums[i] + s_nums[j]
+                while cursor < n and s_nums[cursor] < comb:
+                    cursor += 1
+                    output += 1
+        return output
+
+
 if __name__ == '__main__':
-    s = Solution581()
-    print(s.findUnsortedSubarray([1,3,5,4,2]))
+    s = Solution611()
+    print(s.triangleNumber([1,2,3,4]))
