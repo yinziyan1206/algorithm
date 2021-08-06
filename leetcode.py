@@ -1061,6 +1061,109 @@ class Solution611:
         return output
 
 
+# 802
+class Solution802:
+    """
+        在有向图中，以某个节点为起始节点，从该点出发，每一步沿着图中的一条有向边行走。如果到达的节点是终点（即它没有连出的有向边），则停止。
+
+        对于一个起始节点，如果从该节点出发，无论每一步选择沿哪条有向边行走，最后必然在有限步内到达终点，则将该起始节点称作是 安全 的。
+        
+        返回一个由图中所有安全的起始节点组成的数组作为答案。答案数组中的元素应当按 升序 排列。
+        
+        该有向图有 n 个节点，按 0 到 n - 1 编号，其中 n 是graph的节点数。图以下述形式给出：graph[i] 是编号 j 节点的一个列表，满足 (i, j) 是图的一条有向边。
+    """
+    def eventualSafeNodes(self, graph: List[List[int]]) -> List[int]:
+        n = len(graph)
+        if n < 1:
+            return []
+
+        output = {index for index in range(n) if not graph[index]}
+        while True:
+            singular = set()
+            for cursor in range(n):
+                if cursor in output:
+                    continue
+                if set(graph[cursor]).issubset(output):
+                    singular.add(cursor)
+            if not singular:
+                break
+            output |= singular
+        return sorted(list(output))
+
+
+# 847
+class Solution847:
+    """
+        1 - 0 - 2
+            |
+        5 - 4 - 6 - 3
+            |
+            7
+    """
+    # out of time
+    def shortestPathLength1(self, graph: List[List[int]]) -> int:
+        n = len(graph)
+        if n < 1:
+            return 0
+
+        res = {
+            'output': -1
+        }
+        nodes = {x for x in range(n)}
+
+        def find_children(node: int, group: set):
+            children = graph[node]
+            if len(group) > res['output'] > 0:
+                return
+            if nodes.issubset([x[0] for x in group]):
+                res['output'] = len(group)
+                return
+            for child in children:
+                if (node, child) not in group:
+                    find_children(child, group | {(node, child)})
+
+        min_depth = min({len(x) for x in graph})
+        for index in nodes:
+            if len(graph[index]) <= min_depth:
+                find_children(index, set())
+        if res['output'] > 0:
+            return res['output'] - 1
+        else:
+            return 0
+
+    def shortestPathLength(self, graph: List[List[int]]) -> int:
+        n = len(graph)
+        if n < 2:
+            return 0
+
+        node_state = [(x, 1 << x) for x in range(n)]
+        routes = {(x, 1 << x) for x in range(n)}
+        final = (1 << n) - 1
+        output = 0
+
+        # BFS
+        while node_state:
+            temp = []
+            for node, state in node_state:
+                if state == final:
+                    return output
+                for child in graph[node]:
+                    new_state = (child, 1 << child | state)
+                    if new_state not in routes:
+                        routes.add(new_state)
+                        temp.append(new_state)
+            node_state = temp
+            output += 1
+        return output
+
+
 if __name__ == '__main__':
-    s = Solution611()
-    print(s.triangleNumber([1,2,3,4]))
+    s = Solution847()
+    import time
+
+    t = time.time()
+    print(s.shortestPathLength(
+        [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], [0, 2, 5, 6, 8], [0, 1, 4, 5, 6, 9, 10, 11], [0, 4, 5, 6, 8, 9, 10, 11],
+         [0, 2, 3, 5, 6, 8, 10], [0, 1, 2, 3, 4, 6, 8, 9, 10, 11], [0, 1, 2, 3, 4, 5, 8, 10, 11], [0, 8],
+         [0, 1, 3, 4, 5, 6, 7, 9, 10, 11], [0, 2, 3, 5, 8, 10], [0, 2, 3, 4, 5, 6, 8, 9], [0, 2, 3, 5, 6, 8]]))
+    print(time.time() - t)
