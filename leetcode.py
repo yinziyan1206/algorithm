@@ -1157,13 +1157,56 @@ class Solution847:
         return output
 
 
+# 313
+class Solution313:
+    def nthSuperUglyNumber(self, n: int, primes: List[int]) -> int:
+        if n < 2:
+            return 1
+        level = {x for x in primes}
+        output = sorted({x for x in primes})
+        while len(level) > 0:
+            temp = set()
+            for node in level:
+                for prime in primes:
+                    length = bisect.bisect_left(output, node * prime)
+                    if length < n - 1:
+                        temp.add(node * prime)
+                    else:
+                        break
+
+            level.clear()
+            level |= temp
+            output.extend(level)
+            output = sorted(output)[0: n - 1]
+        return output[n - 2]
+
+
+# 413
+class Solution413:
+    def numberOfArithmeticSlices(self, nums: List[int]) -> int:
+        n = len(nums)
+        if n < 3:
+            return 0
+        start, end = 0, 2
+        output = 0
+        while end < n:
+            if end - start < 2:
+                end += 1
+                continue
+            if nums[end] - nums[end - 1] == nums[start + 1] - nums[start]:
+                output += 1
+                output += (end - start - 2)
+                end += 1
+            else:
+                start = end - 1
+                end += 1
+        return output
+
+
 if __name__ == '__main__':
-    s = Solution847()
+    s = Solution413()
     import time
 
     t = time.time()
-    print(s.shortestPathLength(
-        [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], [0, 2, 5, 6, 8], [0, 1, 4, 5, 6, 9, 10, 11], [0, 4, 5, 6, 8, 9, 10, 11],
-         [0, 2, 3, 5, 6, 8, 10], [0, 1, 2, 3, 4, 6, 8, 9, 10, 11], [0, 1, 2, 3, 4, 5, 8, 10, 11], [0, 8],
-         [0, 1, 3, 4, 5, 6, 7, 9, 10, 11], [0, 2, 3, 5, 8, 10], [0, 2, 3, 4, 5, 6, 8, 9], [0, 2, 3, 5, 6, 8]]))
+    print(s.numberOfArithmeticSlices([1, 2, 3, 4, 5, 6]))
     print(time.time() - t)
