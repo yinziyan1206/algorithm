@@ -1,5 +1,10 @@
 import bisect
-from typing import List, Set
+import heapq
+import random
+import string
+from collections import deque
+from copy import copy, deepcopy
+from typing import List, Set, Dict
 
 
 # 815
@@ -137,6 +142,7 @@ class Solution168:
         输入: 1
         输出: "A"
     """
+
     def convertToTitle(self, columnNumber: int) -> str:
         words = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         output = []
@@ -157,6 +163,7 @@ class Solution3:
         输出: 3
         解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
     """
+
     def lengthOfLongestSubstring(self, s: str) -> int:
         if not s:
             return 0
@@ -181,6 +188,7 @@ class Solution4:
         输出：2.00000
         解释：合并数组 = [1,2,3] ，中位数 2
     """
+
     def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
         pass
 
@@ -202,6 +210,7 @@ class SolutionLCP7:
         解释：信息从小 A 编号 0 处开始，经 3 轮传递，到达编号 4。共有 3 种方案，分别是 0->2->0->4， 0->2->1->4， 0->2->3->4。
 
     """
+
     def numWays(self, n: int, relation: List[List[int]], k: int) -> int:
         node = {0: 1}
         times = 1
@@ -211,7 +220,7 @@ class SolutionLCP7:
             for link in relation:
                 if link[0] in node:
                     if times == k:
-                        if link[1] == n-1:
+                        if link[1] == n - 1:
                             output += node[link[0]]
                     elif link[1] in temp:
                         temp[link[1]] += node[link[0]]
@@ -238,6 +247,7 @@ class Solution1515:
         输出：4.00000
         解释：如图所示，你可以选 [xcentre, ycentre] = [1, 1] 作为新中心的位置，这样一来到每个客户的距离就都是 1，所有距离之和为 4 ，这也是可以找到的最小值。
     """
+
     def getMinDistSum(self, positions: List[List[int]]) -> float:
         s1 = 0
         s2 = 0
@@ -305,6 +315,7 @@ class Solution1914:
         解释：上图展示了矩阵在执行循环轮转操作时每一步的状态。
 
     """
+
     def rotateGrid(self, grid: List[List[int]], k: int) -> List[List[int]]:
         m = len(grid)
         if m > 0:
@@ -355,6 +366,7 @@ class Solution930:
         解释：
         有 4 个满足题目要求的子数组：[1,0,1]、[1,0,1,0]、[0,1,0,1]、[1,0,1]
     """
+
     def numSubarraysWithSum(self, nums: List[int], goal: int) -> int:
         length = len(nums)
         count = 0
@@ -384,6 +396,7 @@ class Solution4:
         输出：2.00000
         解释：合并数组 = [1,2,3] ，中位数 2
     """
+
     def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
         len1, len2 = len(nums1), len(nums2)
         num_arr = list()
@@ -412,6 +425,7 @@ class SolutionM17A10:
         输入：[1,2,5,9,5,9,5,5,5]
         输出：5
     """
+
     def majorityElement(self, nums: List[int]) -> int:
         index, cursor = 0, 0
         for num in nums:
@@ -441,6 +455,7 @@ class Solution275:
              由于研究者有 3 篇论文每篇至少被引用了 3 次，其余两篇论文每篇被引用不多于 3 次，所以她的 h 指数是 3。
 
     """
+
     def hIndex(self, citations: List[int]) -> int:
         i = 0
         while i < len(citations):
@@ -486,6 +501,7 @@ class Solution218:
             if not c:
                 return 0
             return max(c)
+
         point_group = list()
         for line in line_group:
             if line[0] in values_start:
@@ -517,6 +533,7 @@ class Solution1818:
 
         在替换数组 nums1 中最多一个元素 之后 ，返回最小绝对差值和。因为答案可能很大，所以需要对 10^9 + 7 取余 后返回。
     """
+
     def minAbsoluteSumDiff(self, nums1: List[int], nums2: List[int]) -> int:
         raw_abs = [abs(nums1[i] - nums2[i]) for i in range(len(nums1))]
         total_abs = sum(raw_abs)
@@ -533,11 +550,11 @@ class Solution1818:
             raw_abs[cursor] = 0
 
             if (max_abs - min_abs) >= max(raw_abs) > 0:
-                return (total_abs - max_abs + min_abs) % (10**9 + 7)
+                return (total_abs - max_abs + min_abs) % (10 ** 9 + 7)
             elif (max_abs - min_abs) > gap:
                 gap = max_abs - min_abs
 
-        return (total_abs - gap) % (10**9 + 7)
+        return (total_abs - gap) % (10 ** 9 + 7)
 
 
 # 1846
@@ -553,6 +570,7 @@ class Solution1846:
         重新排列arr中的元素，你可以以任意顺序重新排列。
         请你返回执行以上操作后，在满足前文所述的条件下，arr中可能的 最大值。
     """
+
     def maximumElementAfterDecrementingAndRearranging(self, arr: List[int]) -> int:
         s_arr = sorted(arr)
         length = len(arr)
@@ -562,9 +580,9 @@ class Solution1846:
         for i in range(1, length):
             if s_arr[i] > i + 1:
                 s_arr[i] = i + 1
-            elif s_arr[i] - s_arr[i-1] > 1:
-                return s_arr[i-1] + length - i
-        return s_arr[length-1]
+            elif s_arr[i] - s_arr[i - 1] > 1:
+                return s_arr[i - 1] + length - i
+        return s_arr[length - 1]
 
 
 # 剑指offer 53
@@ -572,6 +590,7 @@ class SolutionJZOffer53:
     """
         统计一个数字在排序数组中出现的次数。
     """
+
     def search(self, nums: List[int], target: int) -> int:
         s_nums = sorted(nums)
         count = 0
@@ -596,11 +615,12 @@ class Solution34:
 
         你可以设计并实现时间复杂度为 O(log n) 的算法解决此问题吗？
     """
+
     def searchRange(self, nums: List[int], target: int) -> List[int]:
         length = len(nums)
         if not nums:
             return [-1, -1]
-        left, right = 0, length-1
+        left, right = 0, length - 1
         while right - left > 1:
             middle = int((right + left) / 2)
             if nums[middle] > target:
@@ -647,6 +667,7 @@ class Solution1838:
         来源：力扣（LeetCode）
         链接：https://leetcode-cn.com/problems/frequency-of-the-most-frequent-element
     """
+
     def maxFrequency(self, nums: List[int], k: int) -> int:
         length = len(nums)
         if length < 1:
@@ -655,7 +676,7 @@ class Solution1838:
         # 首先从小到大快排一下
         s_nums = sorted(nums)
         # 移除截距
-        c_nums = [x-s_nums[0] for x in s_nums]
+        c_nums = [x - s_nums[0] for x in s_nums]
         # 滑动窗口
         out = 0
         left, right = 0, 0
@@ -672,7 +693,7 @@ class Solution1838:
                     out = right - left
                 right += 1
                 if right < length:
-                    target += ((right - left) * (c_nums[right] - c_nums[right-1]))
+                    target += ((right - left) * (c_nums[right] - c_nums[right - 1]))
                 else:
                     break
         return out + 1
@@ -704,6 +725,7 @@ class Solution1877:
         解释：数组中的元素可以分为数对 (3,3) 和 (5,2) 。
         最大数对和为 max(3+3, 5+2) = max(6, 7) = 7 。
     """
+
     def minPairSum(self, nums: List[int]) -> int:
         n = len(nums)
         sort_nums = sorted(nums)
@@ -730,9 +752,9 @@ class Solution:
             return 0
         count = int((rungs[0] - 0.1) / dist)
         for i in range(1, n):
-            d = rungs[i] - rungs[i-1]
+            d = rungs[i] - rungs[i - 1]
             if d > dist:
-                count += int(d - 0.1/dist)
+                count += int(d - 0.1 / dist)
         return count
 
     def maxPoints(self, points: List[List[int]]) -> int:
@@ -740,7 +762,7 @@ class Solution:
         n = len(points[0])
         last_line = points[0]
         for i in range(1, m):
-            temp = [0]*n
+            temp = [0] * n
             max_left = 0
             max_right = 0
 
@@ -749,7 +771,7 @@ class Solution:
                 temp[j] = max_left
 
             for j in range(n):
-                max_right = max(max_right - 1, last_line[n-j-1])
+                max_right = max(max_right - 1, last_line[n - j - 1])
                 temp[n - j - 1] = max(temp[n - j - 1], max_right)
 
             last_line = [temp[j] + points[i][j] for j in range(len(temp))]
@@ -767,6 +789,7 @@ class SolutionJZOffer52:
         输出：Reference of the node with value = 2
         输入解释：相交节点的值为 2 （注意，如果两个列表相交则不能为 0）。从各自的表头开始算起，链表 A 为 [0,9,1,2,4]，链表 B 为 [3,2,4]。在 A 中，相交节点前有 3 个节点；在 B 中，相交节点前有 1 个节点。
     """
+
     def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
         if headA is None or headB is None:
             return None
@@ -865,6 +888,7 @@ class Solution1893:
         - 3 和 4 被第二个区间覆盖。
         - 5 被第三个区间覆盖。
     """
+
     def isCovered(self, ranges: List[List[int]], left: int, right: int) -> bool:
         n = len(ranges)
         if n < 1:
@@ -896,6 +920,7 @@ class Solution1713:
     
         一个数组的 子序列指的是删除原数组的某些元素（可能一个元素都不删除），同时不改变其余元素的相对顺序得到的数组。比方说，[2,7,4]是[4,2,3,7,2,1,4]的子序列（加粗元素），但[2,4,2]不是子序列。
     """
+
     def minOperations(self, target: List[int], arr: List[int]) -> int:
         target_n, arr_n = len(target), len(arr)
         target_set = {v: k for k, v in enumerate(target)}
@@ -957,6 +982,7 @@ class Solution863:
 
         返回到目标结点 target 距离为 K 的所有结点的值的列表。 答案可以以任何顺序返回。
     """
+
     def distanceK(self, root: TreeNode, target: TreeNode, k: int) -> List[int]:
         container = list()
         # 获取父节点map
@@ -966,7 +992,7 @@ class Solution863:
         t = target
         times = 0
         while t in parents and times <= k:
-            self.findNode(t, k-times, container)
+            self.findNode(t, k - times, container)
             last = t
             t = parents[t]
             if not t:
@@ -991,9 +1017,9 @@ class Solution863:
             container.append(target.val)
             return
         if target.left:
-            self.findNode(target.left, times-1, container)
+            self.findNode(target.left, times - 1, container)
         if target.right:
-            self.findNode(target.right, times-1, container)
+            self.findNode(target.right, times - 1, container)
 
 
 # 171
@@ -1001,12 +1027,13 @@ class Solution171:
     """
         给定一个Excel表格中的列名称，返回其相应的列序号。
     """
+
     def titleToNumber(self, columnTitle: str) -> int:
         index = 0
         output = 0
         for i in range(len(columnTitle)):
             ch = columnTitle[-i - 1]
-            output += (26**index) * (ord(ch) - ord('A') + 1)
+            output += (26 ** index) * (ord(ch) - ord('A') + 1)
             index += 1
         return output
 
@@ -1018,6 +1045,7 @@ class Solution581:
 
         请你找出符合题意的 最短 子数组，并输出它的长度。
     """
+
     def findUnsortedSubarray(self, nums: List[int]) -> int:
         n = len(nums)
         if n < 1:
@@ -1043,15 +1071,16 @@ class Solution611:
     """
         给定一个包含非负整数的数组，你的任务是统计其中可以组成三角形三条边的三元组个数。
     """
+
     def triangleNumber(self, nums: List[int]) -> int:
         n = len(nums)
         if n < 3:
             return 0
         output = 0
         s_nums = sorted(nums)
-        for i in range(n-2):
+        for i in range(n - 2):
             cursor = i + 2
-            for j in range(i+1, n-1):
+            for j in range(i + 1, n - 1):
                 cursor = max(j + 1, cursor)
                 output += (cursor - j - 1)
                 comb = s_nums[i] + s_nums[j]
@@ -1072,6 +1101,7 @@ class Solution802:
         
         该有向图有 n 个节点，按 0 到 n - 1 编号，其中 n 是graph的节点数。图以下述形式给出：graph[i] 是编号 j 节点的一个列表，满足 (i, j) 是图的一条有向边。
     """
+
     def eventualSafeNodes(self, graph: List[List[int]]) -> List[int]:
         n = len(graph)
         if n < 1:
@@ -1100,6 +1130,7 @@ class Solution847:
             |
             7
     """
+
     # out of time
     def shortestPathLength1(self, graph: List[List[int]]) -> int:
         n = len(graph)
@@ -1203,10 +1234,656 @@ class Solution413:
         return output
 
 
+# 446
+class Solution446:
+    def numberOfArithmeticSlices(self, nums: List[int]) -> int:
+        n = len(nums)
+        if n < 3:
+            return 0
+        output = 0
+        for i in range(n - 2):
+            for j in range(i + 1, n - 1):
+                stack = list()
+                d = nums[j] - nums[i]
+                stack.append(nums[j])
+                k = j + 1
+                while k < n:
+                    if nums[k] - stack.pop(-1) == d:
+                        stack.append(nums[k])
+                        output += 1
+                    k += 1
+        return output
+
+
+# 516
+class Solution516:
+    def longestPalindromeSubseq(self, s: str) -> int:
+        pass
+
+
+# 552
+class Solution552:
+    def checkRecord(self, n: int) -> int:
+        total_time = 3 ** n
+
+        p_more_than_2_a = 0
+        up = n * (n - 1)
+        down = 2
+        index = 0
+        while index < n - 1:
+            p_more_than_2_a += 2 ** (n - 2 - index) * (up / down)
+            index += 1
+            up *= (n - 1 - index)
+            down *= (index + 2)
+        print(p_more_than_2_a)
+
+        p_more_than_3_continuous_l = 0
+        up = n - 2
+        down = 1
+        index = 0
+        while index < n - 2:
+            p_more_than_3_continuous_l += 2 ** (n - 3 - index) * (up / down)
+            index += 1
+            up *= (n - 2 - index)
+            down *= (index + 1)
+        print(p_more_than_3_continuous_l)
+
+        both_p = 0
+        index = 0
+        up = (n - 3) * (n - 4)
+        down = 2
+        while index < n - 4:
+            both_p += 2 ** (n - 5 - index) * (up / down)
+            index += 1
+            up *= (n - 4 - index)
+            down *= (index + 1)
+            # TODO
+
+        return int(total_time - p_more_than_3_continuous_l - p_more_than_2_a + both_p)
+
+
+# 211
+class WordDictionary:
+
+    def __init__(self):
+        self._data: Dict[int, List[Dict[int, str]]] = {}
+
+    def addWord(self, word: str) -> None:
+        if size := len(word):
+            if size not in self._data:
+                self._data[size] = []
+
+            obj = {}
+            for i, w in enumerate(word):
+                obj[i] = w
+            self._data[size].append(obj)
+
+    def search(self, word: str) -> bool:
+        if not (size := len(word)):
+            return False
+        if size not in self._data:
+            return False
+        data_set = self._data[size]
+
+        for data in data_set:
+            for k, v in data.items():
+                if word[k] != '.' and word[k] != v:
+                    break
+            else:
+                return True
+        return False
+
+
+# 629
+class Solution629:
+    def kInversePairs(self, n: int, k: int) -> int:
+        c_total = sum([i for i in range(1, n)])
+        real_k = min(k, c_total - k)
+
+        if real_k == 0:
+            return 1
+        elif real_k < 0:
+            return 0
+
+        pass
+
+        """
+           1 2 3 4 5
+           
+           2 1 3 4 5
+           1 3 2 4 5
+           1 2 4 3 5
+           1 2 3 5 4
+           
+           3 1 2 4 5
+           1 4 2 3 5
+           1 2 5 3 4
+           1 2 4 5 3
+           1 3 4 2 5
+           2 3 1 4 5
+           2 1 4 3 5
+           1 3 2 5 4
+           2 1 3 5 4
+           
+           
+           1, 2, 2, 1
+           1, 3, 5, 6, 5, 3, 1
+           1, 4, 9
+        """
+
+
+# 375
+class Solution375:
+    """
+    我们正在玩一个猜数游戏，游戏规则如下：
+
+    我从 1 到 n 之间选择一个数字。
+    你来猜我选了哪个数字。
+    如果你猜到正确的数字，就会 赢得游戏 。
+    如果你猜错了，那么我会告诉你，我选的数字比你的 更大或者更小 ，并且你需要继续猜数。
+    每当你猜了数字 x 并且猜错了的时候，你需要支付金额为 x 的现金。如果你花光了钱，就会 输掉游戏 。
+    给你一个特定的数字 n ，返回能够 确保你获胜 的最小现金数，不管我选择那个数字 。
+
+    来源：力扣（LeetCode）
+    链接：https://leetcode-cn.com/problems/guess-number-higher-or-lower-ii
+    著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+    """
+
+    def getMoneyAmount(self, n: int) -> int:
+        if n == 1:
+            return 0
+        matrix = [[-1] * n for _ in range(n)]
+        return self.moneyAmount(1, n, matrix)
+
+    def moneyAmount(self, start, end, matrix) -> int:
+        if end - start < 1:
+            return 0
+        if matrix[start - 1][end - 1] > 0:
+            return matrix[start - 1][end - 1]
+
+        matrix[start - 1][end - 1] = min(
+            [
+                cursor + max(self.moneyAmount(start, cursor - 1, matrix), self.moneyAmount(cursor + 1, end, matrix))
+                for cursor in range(start, end)
+            ]
+        )
+        return matrix[start - 1][end - 1]
+
+
+# https://leetcode-cn.com/problems/binary-tree-tilt/
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+class Solution563:
+
+    def findTilt(self, root: TreeNode) -> int:
+        if root is None:
+            return 0
+        out, count = self.getGrad(root, 0)
+        print(out, count)
+        return count
+
+    def getGrad(self, node: TreeNode, count) -> (int, int):
+        if node.left is None and node.right is None:
+            return node.val, count
+        elif node.left is None:
+            res, count = self.getGrad(node.right, count)
+            count += abs(res)
+            return node.val + res, count
+        elif node.right is None:
+            res, count = self.getGrad(node.left, count)
+            count += abs(res)
+            return node.val + res, count
+        else:
+            res_1, count = self.getGrad(node.right, count)
+            res_2, count = self.getGrad(node.left, count)
+            count += abs(res_1 - res_2)
+            return node.val + res_1 + res_2, count
+
+
+# https://leetcode-cn.com/problems/maximum-depth-of-n-ary-tree/
+# Definition for a Node.
+class Node:
+    def __init__(self, val=None, children=None):
+        self.val = val
+        self.children = children
+
+
+class Solution559:
+    def maxDepth(self, root: 'Node') -> int:
+        if not root:
+            return 0
+        return self.getDepth(root, 0)
+
+    def getDepth(self, node: 'Node', depth: int) -> int:
+        if node.children:
+            sub_depth = [self.getDepth(x, depth + 1) for x in node.children]
+            return max(sub_depth)
+        else:
+            return depth
+
+
+# region https://leetcode-cn.com/problems/shuffle-an-array/
+"""
+给你一个整数数组 nums ，设计算法来打乱一个没有重复元素的数组。
+
+实现 Solution class:
+
+Solution(int[] nums) 使用整数数组 nums 初始化对象
+int[] reset() 重设数组到它的初始状态并返回
+int[] shuffle() 返回数组随机打乱后的结果
+"""
+
+
+class Solution384:
+
+    def __init__(self, nums: List[int]):
+        self.root = nums
+        self.rand = list(nums)
+        self.length = len(nums)
+
+    def reset(self) -> List[int]:
+        return self.root
+
+    def shuffle(self) -> List[int]:
+        seed = random.randint(0, self.length - 1)
+        temp = self.rand[seed]
+        self.rand[seed] = self.rand[-1]
+        self.rand[-1] = t
+        return self.rand
+
+
+# endregion
+
+
+# region https://leetcode-cn.com/problems/k-th-smallest-prime-fraction/
+class Solution786:
+    def kthSmallestPrimeFraction(self, arr: List[int], k: int) -> List[int]:
+        if k == 1:
+            return [arr[0], arr[-1]]
+        length = len(arr)
+        answer_pop = []
+        for i, v in enumerate(range(min(k, length))):
+            dmt = arr[-(i + 1)]
+            for j in range(min((k - v), length - i - 1)):
+                nmt = arr[j]
+                answer_pop.append([nmt, dmt])
+
+        answer_arr = sorted(answer_pop, key=lambda x: x[0] / x[1])
+        return answer_arr[k - 1]
+
+
+# endregion
+
+
+# region https://leetcode-cn.com/problems/relative-ranks/
+class Solution506:
+    def findRelativeRanks(self, score: List[int]) -> List[str]:
+        n = len(score)
+        output = [''] * n
+        s_arr = sorted(enumerate(score), key=lambda x: x[1], reverse=True)
+
+        for i, k in enumerate(s_arr):
+            if i == 0:
+                output[k[0]] = 'Gold Medal'
+            elif i == 1:
+                output[k[0]] = 'Silver Medal'
+            elif i == 2:
+                output[k[0]] = 'Bronze Medal'
+            else:
+                output[k[0]] = str(i + 1)
+        return output
+
+
+# endregion
+
+
+# region https://leetcode-cn.com/problems/maximize-sum-of-array-after-k-negations/
+class Solution1005:
+    def largestSumAfterKNegations(self, nums: List[int], k: int) -> int:
+        if not nums:
+            return 0
+
+        sort_arr = sorted(nums)
+        parallel_index = bisect.bisect_left(sort_arr, 0)
+        neg_arr = sort_arr[:parallel_index]
+        pos_arr = sort_arr[parallel_index:]
+        for i in range(len(neg_arr)):
+            if k > 0:
+                k -= 1
+            else:
+                return sum(pos_arr) + sum(neg_arr[i:]) - sum(neg_arr[:i])
+
+        out = sum(pos_arr) - sum(neg_arr)
+        if k % 2 == 0:
+            return out
+
+        if not pos_arr:
+            return out + 2 * neg_arr[-1]
+        if not neg_arr:
+            return out - 2 * pos_arr[0]
+        return out - 2 * min(pos_arr[0], -neg_arr[-1])
+
+
+# endregion
+
+
+# region https://leetcode-cn.com/problems/truncate-sentence/
+class Solution1816:
+    def truncateSentence(self, s: str, k: int) -> str:
+        return ' '.join(s.split()[:k])
+
+
+# endregion
+
+
+# region https://leetcode-cn.com/problems/coloring-a-border/
+
+class Solution1034:
+    # def colorBorder(self, grid: List[List[int]], row: int, col: int, color: int) -> List[List[int]]:
+    #     if not grid:
+    #         return [[]]
+    #     self.height = len(grid)
+    #     self.width = len(grid[0])
+    #
+    #     self.base = grid[row][col]
+    #     self.grid = grid
+    #     self.output = deepcopy(grid)
+    #     self.color = color
+    #
+    #     self.detectChunk(row, col, row, col)
+    #     return self.output
+    #
+    # def detectChunk(self, row: int, col: int, last_row, last_col):
+    #     if col >= self.width or col < 0:
+    #         self.output[last_row][last_col] = self.color
+    #         return
+    #     if row >= self.height or row < 0:
+    #         self.output[last_row][last_col] = self.color
+    #         return
+    #     if self.grid[row][col] != self.base:
+    #         if self.grid[row][col] != 0:
+    #             self.output[last_row][last_col] = self.color
+    #         return
+    #     self.grid[row][col] = 0
+    #     if row - 1 != last_row:
+    #         self.detectChunk(row - 1, col, row, col)
+    #     if row + 1 != last_row:
+    #         self.detectChunk(row + 1, col, row, col)
+    #     if col - 1 != last_col:
+    #         self.detectChunk(row, col - 1, row, col)
+    #     if col + 1 != last_col:
+    #         self.detectChunk(row, col + 1, row, col)
+    def colorBorder(self, grid: List[List[int]], row: int, col: int, color: int) -> List[List[int]]:
+        width, height = len(grid), len(grid[0])
+        base = grid[row][col]
+        output = [[0] * height for _ in range(width)]
+        direct = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        stack = [(row, col)]
+        while len(stack) > 0:
+            r, c = stack.pop()
+            count = 0
+            for d in direct:
+                r_next, c_next = r + d[0], c + d[1]
+                if r_next < 0 or c_next < 0 or r_next >= width or c_next >= height:
+                    continue
+                if grid[r_next][c_next] != base:
+                    continue
+                count += 1
+                if output[r_next][c_next] != 0:
+                    continue
+                stack.append((r_next, c_next))
+            output[r][c] = color if count < 4 else grid[r][c]
+        for i in range(width):
+            for j in range(height):
+                if output[i][j] == 0:
+                    output[i][j] = grid[i][j]
+        return output
+
+
+# endregion
+
+
+# region https://leetcode-cn.com/problems/maximum-sum-of-3-non-overlapping-subarrays/
+
+class Solution689:
+    def maxSumOfThreeSubarrays(self, nums: List[int], k: int) -> List[int]:
+        n = len(nums)
+        if n < 3 * k:
+            return []
+        rest_nums = [sum(nums[i:i + k]) for i in range(n - k + 1)]
+        rest_n = len(rest_nums)
+        top = 0
+        out = []
+
+        left = (0, rest_nums[0])
+        right = max(enumerate(rest_nums[2 * k: rest_n]), key=lambda x: x[1])
+        right = (2 * k + right[0], right[1])
+
+        for mid in range(k, rest_n-k):
+            left = left if rest_nums[mid - k] <= left[1] else (mid - k, rest_nums[mid - k])
+            if rest_nums[mid + k - 1] == right[1]:
+                right = max(enumerate(rest_nums[mid + k: rest_n]), key=lambda x: x[1])
+                right = (mid + k + right[0], right[1])
+
+            res = left[1] + right[1] + rest_nums[mid]
+            if res > top:
+                top = res
+                out = [left[0], mid, right[0]]
+
+        return out
+
+# endregion
+
+
+# region https://leetcode-cn.com/problems/valid-tic-tac-toe-state/
+
+class Solution794:
+    def validTicTacToe(self, board: List[str]) -> bool:
+        point_loc = {
+            'X': set(),
+            'O': set(),
+            ' ': set(),
+        }
+        success_flags = [
+            {(0, 0), (0, 1), (0, 2)},
+            {(1, 0), (1, 1), (1, 2)},
+            {(2, 0), (2, 1), (2, 2)},
+            {(0, 0), (1, 0), (2, 0)},
+            {(0, 1), (1, 1), (2, 1)},
+            {(0, 2), (1, 2), (2, 2)},
+            {(0, 0), (1, 1), (2, 2)},
+            {(0, 2), (1, 1), (2, 0)},
+        ]
+        for r in range(3):
+            for c in range(3):
+                point_loc[board[r][c]].add((r, c))
+
+        if len(point_loc['X']) - len(point_loc['O']) == 0:
+            for flag in success_flags:
+                if flag.issubset(point_loc['X']):
+                    return False
+            return True
+        elif len(point_loc['X']) - len(point_loc['O']) == 1:
+            for flag in success_flags:
+                if flag.issubset(point_loc['O']):
+                    return False
+            return True
+        return False
+
+
+# endregion
+
+
+# region https://leetcode-cn.com/problems/shortest-completing-word/
+
+class Solution748:
+    def shortestCompletingWord(self, licensePlate: str, words: List[str]) -> str:
+        word_plate = [0] * 26
+        for c in licensePlate:
+            index = ord(c.lower())-ord('a')
+            if 0 <= index <= 25:
+                word_plate[index] += 1
+
+        out = ""
+        temp = 1000
+        for word in words:
+            w = [0] * 26
+            for c in word:
+                w[ord(c) - ord('a')] += 1
+            for i in range(26):
+                if w[i] < word_plate[i]:
+                    break
+            else:
+                if len(word) < temp:
+                    out = word
+                    temp = len(word)
+        return out
+
+# endregion
+
+
+# region https://leetcode-cn.com/problems/perfect-number/
+
+class Solution507:
+    def checkPerfectNumber(self, num: int) -> bool:
+        if num == 1:
+            return False
+
+        count = 1
+        while num % 2 == 0:
+            num = num >> 1
+            count += 1
+
+        for i in range(3, int(num/3), 2):
+            if num % i == 0:
+                return False
+
+        return num == 2 ** count - 1
+
+# endregion
+
+
+# region https://leetcode-cn.com/problems/increasing-triplet-subsequence/
+
+class Solution334:
+    def increasingTriplet(self, nums: List[int]) -> bool:
+        n = len(nums)
+        if n < 3:
+            return False
+
+        left, right = None, None
+
+        for num in nums:
+            if left is None:
+                left = num
+                continue
+            if right is None:
+                if num > left:
+                    right = num
+                else:
+                    left = num
+                continue
+
+            if num > right:
+                return True
+            if left < num <= right:
+                right = num
+            elif num <= left:
+                left = num
+        return False
+
+# endregion
+
+
+# region https://leetcode-cn.com/problems/largest-number-at-least-twice-of-others/
+
+class Solution747:
+    def dominantIndex(self, nums: List[int]) -> int:
+        n = len(nums)
+        cursor, max_num = 0, 0
+        sub_max_num = 0
+        for i in range(n):
+            if nums[i] > max_num:
+                sub_max_num = max_num
+                max_num = nums[i]
+                cursor = i
+            elif sub_max_num < nums[i] < max_num:
+                sub_max_num = nums[i]
+
+        return cursor if max_num >= 2 * sub_max_num else -1
+
+# endregion
+
+
+# region https://leetcode-cn.com/problems/minimum-time-difference/
+
+class Solution539:
+
+    def findMinDifference(self, timePoints: List[str]) -> int:
+        n = len(timePoints)
+        timing = []
+        for point in timePoints:
+            time_group = point.split(':')
+            timing.append(int(time_group[0]) * 60 + int(time_group[1]))
+        sorted_timing = sorted(timing)
+
+        d_timing = [sorted_timing[i+1] - sorted_timing[i] for i in range(n - 1)]
+        d_timing.append(24 * 60 - (sorted_timing[-1] - sorted_timing[0]))
+
+        return min(d_timing)
+
+# endregion
+
+
+# region https://leetcode-cn.com/problems/second-minimum-time-to-reach-destination/
+
+class Solution2045:
+    def secondMinimum(self, n: int, edges: List[List[int]], time: int, change: int) -> int:
+        routes = {}
+        for edge in edges:
+            if edge[0] not in routes:
+                routes[edge[0]] = set()
+            if edge[1] not in routes:
+                routes[edge[1]] = set()
+            routes[edge[0]].add(edge[1])
+            routes[edge[1]].add(edge[0])
+
+        dist = [[float("inf"), float("inf")] for _ in range(n + 1)]
+        dist[1][0] = 0
+        q = deque([(1, 0)])
+        while dist[n][1] == float('inf'):
+            p = q.popleft()
+            for route in routes[p[0]]:
+                d = p[1] + 1
+                if d < dist[route][0]:
+                    dist[route][0] = d
+                    q.append((route, d))
+                elif dist[route][0] < d < dist[route][1]:
+                    dist[route][1] = d
+                    q.append((route, d))
+
+        output = 0
+        for _ in range(int(dist[n][1])):
+            if (res := int(output / change)) % 2 == 1:
+                output = (res + 1) * change
+            output += time
+        return output
+
+# endregion
+
+
 if __name__ == '__main__':
-    s = Solution413()
     import time
 
+    s = Solution2045()
+
     t = time.time()
-    print(s.numberOfArithmeticSlices([1, 2, 3, 4, 5, 6]))
+    print(s.secondMinimum(n=5, edges=[[1, 2], [1, 3], [1, 4], [3, 4], [4, 5]], time=3, change=5))
+    print(s.secondMinimum(n=2, edges=[[1, 2]], time=3, change=2))
     print(time.time() - t)
