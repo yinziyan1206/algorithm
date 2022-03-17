@@ -1878,12 +1878,152 @@ class Solution2045:
 # endregion
 
 
+# region https://leetcode-cn.com/problems/count-number-of-maximum-bitwise-or-subsets/
+
+class Solution2044:
+    def countMaxOrSubsets(self, nums: List[int]) -> int:
+        self.n = len(nums)
+        self.nums = nums
+        self.count = 0
+        self.max_xor = 0
+        for i in range(self.n):
+            self.max_xor |= nums[i]
+
+        self.dfs(0, 0)
+        return self.count
+
+    def dfs(self, cursor, last):
+        if cursor >= self.n:
+            return
+        if last | self.nums[cursor] == self.max_xor:
+            self.count += (2 ** (len(self.nums) - cursor - 1))
+        else:
+            self.dfs(cursor + 1, last | self.nums[cursor])
+        self.dfs(cursor + 1, last)
+
+# endregion
+
+# region https://leetcode-cn.com/problems/all-oone-data-structure/
+
+
+class NodeSet:
+    def __init__(self):
+        self.prev = None
+        self.next = None
+        self.time = 0
+        self.data = set()
+
+
+class Solution432:
+
+    def __init__(self):
+        self.__map = {}
+        self.root = NodeSet()
+        self.root.prev = self.root.next = self.root
+
+    def inc(self, key: str) -> None:
+        if key not in self.__map:
+            if self.root.next.time != 1:
+                new_node = NodeSet()
+                new_node.time = 1
+                new_node.prev = self.root
+                new_node.next = self.root.next
+                self.root.next = new_node
+                new_node.next.prev = new_node
+            self.root.next.data.add(key)
+            self.__map[key] = self.root.next
+        else:
+            node = self.__map[key]
+            if node.next == self.root:
+                new_node = NodeSet()
+                new_node.time = node.time + 1
+                new_node.next = self.root
+                new_node.prev = node
+                node.next = new_node
+                self.root.prev = new_node
+            elif node.next.time != node.time + 1:
+                new_node = NodeSet()
+                new_node.time = node.time + 1
+                new_node.next = node.next
+                new_node.prev = node
+                node.next = new_node
+                new_node.next.prev = new_node
+
+            node.next.data.add(key)
+            self.__map[key] = node.next
+            node.data.remove(key)
+            if not node.data:
+                node.prev.next = node.next
+                node.next.prev = node.prev
+
+    def dec(self, key: str) -> None:
+        node = self.__map[key]
+        node.data.remove(key)
+        if node.time == 1:
+            del self.__map[key]
+        else:
+            if node.prev.time != node.time - 1:
+                new_node = NodeSet()
+                new_node.time = node.time - 1
+                new_node.next = node
+                new_node.prev = node.prev
+                node.prev.next = new_node
+                node.prev = new_node
+            node.prev.data.add(key)
+            self.__map[key] = node.prev
+        if not node.data:
+            node.prev.next = node.next
+            node.next.prev = node.prev
+
+    def getMaxKey(self) -> str:
+        if self.root.prev.data:
+            data = self.root.prev.data.pop()
+            self.root.prev.data.add(data)
+            return data
+        return ""
+
+    def getMinKey(self) -> str:
+        if self.root.next.data:
+            data = self.root.next.data.pop()
+            self.root.next.data.add(data)
+            return data
+        return ""
+
+# endregion
+
+
+# region https://leetcode-cn.com/problems/longest-word-in-dictionary/
+
+
+class Solution720:
+    def longestWord(self, words: List[str]) -> str:
+        char_set = {''}
+        char_temp = set()
+
+        while True:
+            next_words = []
+            for word in words:
+                if word[:-1] in char_set:
+                    char_temp.add(word)
+                else:
+                    next_words.append(word)
+
+            if not char_temp:
+                return min(char_set)
+
+            char_set = set(char_temp)
+            char_temp.clear()
+            words = next_words
+
+# endregion
+
+
 if __name__ == '__main__':
     import time
 
-    s = Solution2045()
+    s = Solution720()
 
     t = time.time()
-    print(s.secondMinimum(n=5, edges=[[1, 2], [1, 3], [1, 4], [3, 4], [4, 5]], time=3, change=5))
-    print(s.secondMinimum(n=2, edges=[[1, 2]], time=3, change=2))
+    print(s.longestWord(["rac","rs","ra","on","r","otif","o","onpdu","rsf","rs","ot","oti","racy","onpd"]))
+    print(s.longestWord(["a", "banana", "app", "appl", "ap", "apply", "apple"]))
     print(time.time() - t)
