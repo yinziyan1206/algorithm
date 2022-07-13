@@ -2019,12 +2019,210 @@ class Solution720:
 # endregion
 
 
+# region https://leetcode-cn.com/problems/simple-bank-system/
+
+class Bank2043:
+
+    def __init__(self, balance: List[int]):
+        self.balance = balance
+        self.n = len(balance)
+
+    def transfer(self, account1: int, account2: int, money: int) -> bool:
+        if any((account1 > self.n, account2 > self.n)):
+            return False
+        if money > self.balance[account1 - 1]:
+            return False
+        self.balance[account1 - 1] -= money
+        self.balance[account2 - 1] += money
+        return True
+
+    def deposit(self, account: int, money: int) -> bool:
+        if account > self.n:
+            return False
+        self.balance[account - 1] += money
+        return True
+
+    def withdraw(self, account: int, money: int) -> bool:
+        if account > self.n:
+            return False
+        if money > self.balance[account - 1]:
+            return False
+        self.balance[account - 1] -= money
+        return True
+
+
+# endregion
+
+
+# region https://leetcode.cn/problems/serialize-and-deserialize-bst/
+
+
+class Codec449:
+
+    def serialize(self, root: TreeNode) -> str:
+        if not root:
+            return ''
+        stack = []
+        self.dfs(root, stack)
+        return ' '.join(stack)
+
+    def deserialize(self, data: str) -> TreeNode:
+        if not data:
+            return None
+        val = data.split(' ')
+        root = TreeNode(int(val[0]))
+        stack = [root]
+        cursor = root
+        flag = False
+        for node in val[1:]:
+            if node != '&':
+                if not flag:
+                    cursor.left = TreeNode(int(node))
+                    cursor = cursor.left
+                else:
+                    cursor.right = TreeNode(int(node))
+                    cursor = cursor.right
+                    flag = False
+                stack.append(cursor)
+            else:
+                flag = True
+                cursor = stack.pop(-1)
+        return root
+
+    def dfs(self, node: TreeNode, stack: list):
+        if node:
+            stack.append(str(node.val))
+            self.dfs(node.left, stack)
+            stack.append('&')
+            self.dfs(node.right, stack)
+
+# endregion
+
+
+# region https://leetcode.cn/problems/delete-columns-to-make-sorted/
+
+class Solution944:
+    def minDeletionSize(self, strs: List[str]) -> int:
+        n = len(strs)
+        cursor = {k: v for k, v in enumerate(strs[0])}
+        out = 0
+        for i in range(1, n):
+            temp = {}
+            for k, v in cursor.items():
+                if strs[i][k] >= v:
+                    temp[k] = strs[i][k]
+                else:
+                    out += 1
+            if not temp:
+                break
+            cursor = temp
+        return out
+
+
+# endregion
+
+
+# region https://leetcode.cn/problems/one-away-lcci/
+
+class Solution0105:
+    def oneEditAway(self, first: str, second: str) -> bool:
+        n_1 = len(first)
+        n_2 = len(second)
+        temp = 0
+
+        if n_1 - n_2 == 1:
+            i = 0
+            while i < n_2:
+                if first[i + temp] != second[i]:
+                    temp += 1
+                else:
+                    i += 1
+                if temp > 1:
+                    return False
+            return True
+        elif n_1 - n_2 == -1:
+            i = 0
+            while i < n_1:
+                if first[i] != second[i + temp]:
+                    temp += 1
+                else:
+                    i += 1
+                if temp > 1:
+                    return False
+            return True
+        elif n_1 == n_2:
+            for i in range(n_1):
+                if first[i] != second[i]:
+                    temp += 1
+                if temp > 1:
+                    return False
+            return True
+        return False
+
+# endregion
+
+
+# region https://leetcode.cn/problems/kth-smallest-number-in-multiplication-table/
+
+class Solution668:
+    """
+        1  2  3  4
+        2  4  6  8
+        3  6  9  12
+        4  8  12 16
+        5  10 15 20
+    """
+    def findKthNumber(self, m: int, n: int, k: int) -> int:
+        left, right = 1, m * n
+        while True:
+            mid = (left + right) // 2
+            times = sum(min(mid // (i + 1), n) for i in range(m))
+            if times >= k:
+                if right - left == 1:
+                    return right
+                right = mid
+            elif times < k:
+                if right - left == 1:
+                    return right
+                left = mid
+
+
+# endregion
+
+
+# region https://leetcode.cn/problems/asteroid-collision/
+
+class Solution735:
+
+    def asteroidCollision(self, asteroids: List[int]) -> List[int]:
+        stack: List[int] = []
+        i, n = 0, len(asteroids)
+        while i < n:
+            if not stack or not (stack[-1] > 0 and asteroids[i] < 0):
+                stack.append(asteroids[i])
+                i += 1
+            else:
+                last = stack.pop(-1)
+                if abs(last) > abs(asteroids[i]):
+                    stack.append(last)
+                    i += 1
+                elif abs(last) < abs(asteroids[i]):
+                    continue
+                else:
+                    i += 1
+        return stack
+
+# endregion
+
+
 if __name__ == '__main__':
     import time
 
-    s = Solution720()
+    s = Solution735()
 
     t = time.time()
-    print(s.longestWord(["rac","rs","ra","on","r","otif","o","onpdu","rsf","rs","ot","oti","racy","onpd"]))
-    print(s.longestWord(["a", "banana", "app", "appl", "ap", "apply", "apple"]))
+    assert s.asteroidCollision(asteroids=[5, 10, -5]) == [5, 10]
+    assert s.asteroidCollision(asteroids=[8, -8]) == []
+    assert s.asteroidCollision(asteroids=[10, 2, -5]) == [10]
+    assert s.asteroidCollision(asteroids=[-2, -1, 1, 2]) == [-2, -1, 1, 2]
     print(time.time() - t)
